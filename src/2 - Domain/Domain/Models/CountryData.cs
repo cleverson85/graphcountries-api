@@ -1,6 +1,6 @@
 ﻿namespace Domain.Models
 {
-    public class ContryData : BaseEntity
+    public class CountryData : BaseEntity
     {
         public string JsonData { get; set; }
     }

@@ -1,33 +1,26 @@
-#FROM mcr.microsoft.com/dotnet/aspnet:3.1 AS build-env
-#WORKDIR /src
-#EXPOSE 80
-#
-#COPY src/*/*.csproj ./
-#RUN for file in $(ls *.csproj); do mkdir -p src/${file%.*}/ && mv $file src/${file%.*}/; done
-#
-#RUN dotnet restore Api -v m
-#
-#COPY . ./
-#RUN dotnet publish -c Release -o out
-#
-#FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
-#WORKDIR /app
-#COPY --from=build-env /app/out .
-#ENTRYPOINT ["dotnet", "Api.dll"]
-#
+FROM mcr.microsoft.com/dotnet/aspnet:3.1 AS base
 
-
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build-env
 WORKDIR /app
+EXPOSE 5000
 
-COPY *.csproj ./
-RUN dotnet restore
+FROM mcr.microsoft.com/dotnet/sdk:3.1 AS build
+WORKDIR /src
+COPY ["src/1 - Services/Api/Api.csproj", "src/1 - Services/Api/"]
+COPY ["src/2 - Domain/Domain/Domain.csproj", "src/2 - Domain/Domain/"]
+COPY ["src/3 - Infra/IoC/IoC.csproj", "src/3 - Infra/IoC/"]
+COPY ["src/3 - Infra/Data/Data.csproj", "src/3 - Infra/Data/"]
+RUN dotnet restore "src/1 - Services/Api/Api.csproj"
 
-COPY . ./
-RUN dotnet publish -c Release -o out
+COPY . .
+WORKDIR "/src/src/1 - Services/Api"
+RUN dotnet build "Api.csproj" -c Release -o /app/build
 
+FROM build AS publish
+RUN dotnet publish "Api.csproj" -c Release -o /app/publish
 
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
+FROM base AS final
 WORKDIR /app
-COPY --from=build-env /app/out .
+COPY --from=publish /app/publish .
+
+ENV ASPNETCORE_URLS="http://localhost:5000"
 ENTRYPOINT ["dotnet", "Api.dll"]

@@ -6,7 +6,7 @@ namespace Data.Contexts
 {
     public class Context : DbContext
     {
-        public DbSet<ContryData> ContryData { get; set; }
+        public DbSet<CountryData> CountryData { get; set; }
 
         public Context(DbContextOptions<Context> options) : base(options)
         { }

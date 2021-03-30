@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿
+using Microsoft.Extensions.Configuration;
 
 namespace Domain.Settings
 {
@@ -12,7 +13,7 @@ namespace Domain.Settings
         {
             END_POINT = $"https://countries-274616.ew.r.appspot.com/";
             GIT_PROJECT = "";
-            CONNECTION_STRING = $"Host=localhost;Port=15432;Pooling=true;Database=Countries;User Id=postgres;Password=docker;";
+            CONNECTION_STRING = $"Host=localhost;Port=5432;Pooling=true;Database=graphcountries;User Id=postgres;Password=docker;";
            
         }
     }

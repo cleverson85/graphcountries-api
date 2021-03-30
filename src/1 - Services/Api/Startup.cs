@@ -41,6 +41,16 @@ namespace Api
                 .AddGraphQL()
                 .AddGraphTypes(ServiceLifetime.Scoped);
 
+            //services.AddAuthentication()
+            //    .AddGoogle(options =>
+            //    {
+            //        IConfigurationSection googleAuthNSection =
+            //            Configuration.GetSection("Authentication:Google");
+
+            //        options.ClientId = googleAuthNSection["ClientId"];
+            //        options.ClientSecret = googleAuthNSection["ClientSecret"];
+            //    });
+
             services
                 .AddControllers();
 
@@ -59,7 +69,7 @@ namespace Api
                 await next.Invoke();
                 //Response
                 var unitOfWork = (IUnitOfWork)context.RequestServices.GetService(typeof(IUnitOfWork));
-                await unitOfWork.SendChanges();
+                await unitOfWork.Commit();
             });
 
             if (env.IsDevelopment())

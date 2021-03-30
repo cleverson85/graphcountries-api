@@ -11,6 +11,8 @@ namespace Data
     public class UnitOfWork : IUnitOfWork
     {
         public readonly Context _context;
+        private bool disposedValue;
+
         public IDbContextTransaction Transaction { get; private set; }
 
         public UnitOfWork(Context context)
@@ -45,7 +47,6 @@ namespace Data
         {
             try
             {
-                _context.ChangeTracker.DetectChanges();
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -55,7 +56,7 @@ namespace Data
             }
         }
 
-        private async Task Commit()
+        public async Task Commit()
         {
             if (Transaction != null)
             {
@@ -68,7 +69,11 @@ namespace Data
         public async Task SendChanges()
         {
             await Save();
-            await Commit();
+        }
+
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
         }
     }
 }

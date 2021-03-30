@@ -10,9 +10,8 @@ namespace IoC
     {
         public static IServiceCollection ConfigureServices(this IServiceCollection services)
         {
-            services.AddTransient<ICountryService, CountryService>();
-
-            services.AddTransient<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<ICountryService, CountryService>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             return services;
         }

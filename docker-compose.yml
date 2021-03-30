@@ -2,34 +2,41 @@ version: '3.6'
 
 services:
   #api:
-  #  build: 
-  #    context: .
-  #    dockerfile: src\1 - Services\Api\Dockerfile
-  #  container_name: graphcoutries-api
-  #  depends_on:
-  #    - db
-  #  ports:
-  #    - 80:80
-  #  networks:
-  #    - backend 
+  # build: 
+  #   context: .
+  #   dockerfile: src\1 - Services\Api\Dockerfile
+  # container_name: graphcoutries-api
+  # ports:
+  #    - 5000:5000
+  # networks:
+  #   - backend 
 
   db:
     image: postgres:13-alpine
-    container_name: graphcoutries-postgres-db
+    container_name: postgres-db
     environment:
       POSTGRES_HOST: ${POSTGRES_HOST}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
-      PGDATA: /var/lib/postgresql/data/pgdata
     ports:
-      - "15432:15432"
+      - 5432:5432
     networks:
       - backend
     volumes:
       - postgres-data:/var/lib/postgresql/data
-      #- ./.docker/db-data:/var/lib/postgresql/data
+
+  #db-seed:
+  #  image: postgres:13-alpine
+  #  build:
+  #    context: .
+  #  container_name: db-seed
+  #  depends_on:
+  #   - db
 
 networks:
   backend:
     driver: bridge
+
+volumes:
+  postgres-data:

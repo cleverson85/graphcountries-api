@@ -17,11 +17,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "src\2 - Domain\Do
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IoC", "src\3 - Infra\IoC\IoC.csproj", "{2AD990FF-1000-44E5-ABEC-1E0331A47C35}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data", "src\3 - Infra\Data\Data.csproj", "{00D8DE7B-6956-4537-81D4-5351F195A3FA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data", "src\3 - Infra\Data\Data.csproj", "{00D8DE7B-6956-4537-81D4-5351F195A3FA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker", "docker", "{1EEB369E-545F-4136-A213-5C91065B54CF}"
 	ProjectSection(SolutionItems) = preProject
+		.env = .env
 		docker-compose.yml = docker-compose.yml
+		Dockerfile = Dockerfile
+		entrypoint.sh = entrypoint.sh
 	EndProjectSection
 EndProject
 Global

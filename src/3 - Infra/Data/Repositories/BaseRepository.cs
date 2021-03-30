@@ -26,7 +26,7 @@ namespace Data.Repositories
             var entity = await GetById(id);
             _dbSet.Remove(entity);
 
-            await Task.CompletedTask;
+            await SaveChanges();
         }
 
         public async Task<IEnumerable<Entity>> GetAll()
@@ -67,12 +67,19 @@ namespace Data.Repositories
             {
                 await Update(entity);
             }
+
+            await SaveChanges();
         }
 
         public async Task Update(Entity entity)
         {
             _dbSet.Update(entity);
-            await Task.CompletedTask;
+            await SaveChanges();
+        }
+
+        private async Task SaveChanges()
+        {
+            await _unitOfWork.SendChanges();
         }
     }
 }
