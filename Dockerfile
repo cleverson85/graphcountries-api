@@ -1,4 +1,4 @@
-FROM alpine
+ROM alpine
 
 WORKDIR /app
 

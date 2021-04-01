@@ -9,8 +9,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Data.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20210330053937_CountryMigration")]
-    partial class CountryMigration
+    [Migration("20210330173203_CountryMigrate")]
+    partial class CountryMigrate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

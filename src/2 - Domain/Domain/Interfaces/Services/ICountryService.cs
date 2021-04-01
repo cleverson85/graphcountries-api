@@ -7,9 +7,10 @@ namespace Domain.Interfaces.Services
 {
     public interface ICountryService : IBaseService<CountryData>
     {
-        public Task<IEnumerable<Country>> GetByCountryName(string countryName);
-        public Task<IEnumerable<Country>> GetByCapitalName(string capitalName);
-        public Task SaveCountry(Country entity);
-        public Task DeleteCountry(Country entity);
+        Task<IEnumerable<Country>> GetByCountryName(string countryName);
+        Task<IEnumerable<Country>> GetByCapitalName(string capitalName);
+        Task SaveCountry(Country entity);
+        Task DeleteCountry(Country entity);
+        Task UpdateCountry(Country entity);
     }
 }

@@ -3,7 +3,6 @@ using Domain.Interfaces.Services;
 using Domain.Models;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -58,9 +57,23 @@ namespace Data.Services
 
             if (jsonList.Remove(entity))
             {
-                //country.JsonData = JsonSerializer.Serialize(jsonList);
+                var country = await _countryRepository.GetCountryData();
+                country.JsonData = JsonSerializer.Serialize(jsonList);
 
-                //await Save(country);
+                await Save(country);
+            }
+        }
+
+        public async Task UpdateCountry(Country entity)
+        {
+            IList<Country> jsonList = await GetJsonCountryList();
+
+            if (jsonList.Remove(entity))
+            {
+                var country = await _countryRepository.GetCountryData();
+                country.JsonData = JsonSerializer.Serialize(jsonList);
+
+                await Save(country);
             }
         }
 

@@ -1,7 +1,8 @@
 ﻿using Domain.Interfaces.Services;
 using Domain.Models;
+using Domain.Settings;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Threading.Tasks;
 using static Domain.Util.Endpoints;
 
@@ -9,13 +10,16 @@ namespace Api.Controllers
 {
     [ApiController]
     [Route("api/coutries/[action]")]
-    public class GraphCountries : Controller
+    [Authorize]
+    public class GraphCountriesController : Controller
     {
         private readonly ICountryService _countryService;
+        private readonly AppSettings _appSettings;
 
-        public GraphCountries(ICountryService countryService)
+        public GraphCountriesController(ICountryService countryService, AppSettings appSettings)
         {
             _countryService = countryService;
+            _appSettings = appSettings;
         }
 
         [HttpGet]
@@ -40,26 +44,35 @@ namespace Api.Controllers
 
         [HttpPost]
         [Route(Route.POST)]
-        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Save([FromBody] Country entity)
         {
-            try
-            {
-                await _countryService.SaveCountry(entity);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            await _countryService.SaveCountry(entity);
+            return Ok();
+        }
+
+        [HttpPut]
+        [Route(Route.PUT)]
+        public async Task<IActionResult> Update([FromBody] Country entity)
+        {
+            await _countryService.UpdateCountry(entity);
+            return Ok();
         }
 
         [HttpDelete]
         [Route(Route.DELETE)]
         public async Task<IActionResult> Delete([FromBody] Country entity)
         {
-            return Json(await _countryService.GetByCountryName(countryName));
+            await _countryService.DeleteCountry(entity);
+            return Ok();
         }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetUrlRepository()
+        {
+            return await Task.FromResult(Json(_appSettings.GitRespository));
+        }
+
 
         //public async Task<IActionResult> Post([FromBody] GraphQLQuery query)
         //{

@@ -1,4 +1,4 @@
-#!/bin/sh
+!/bin/sh
 
 : ${HOST:=localhost}
 : ${PORT:=5432}

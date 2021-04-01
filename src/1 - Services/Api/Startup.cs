@@ -1,13 +1,18 @@
+using Api.Middlewares;
 using Domain.Interfaces;
 using Domain.Settings;
 using GraphQL.Server;
 using GraphQL.Server.Ui.Playground;
 using IoC;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 namespace Api
@@ -27,21 +32,26 @@ namespace Api
             AppSettings appSettings = new AppSettings(Configuration);
             services.AddScoped(c => appSettings);
 
-            services.AddCors(c =>
-            {
-                c.AddPolicy("CorsPolice", builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().WithExposedHeaders("Content-Disposition"));
-            });
+            //services
+            //        .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            //        .AddJwtBearer(c =>
+            //        {
+            //            c.Authority = "https://securetoken.google.com/graphcoutries";
+            //            c.TokenValidationParameters = new TokenValidationParameters()
+            //            {
+            //                ValidateIssuer = true,
+            //                ValidIssuer = "https://securetoken.google.com/graphcoutries",
+            //                ValidateAudience = true,
+            //                ValidAudience = "graphcoutries",
+            //                ValidateLifetime = true
+            //            };
+            //        });
 
-            services
-               .ConfigureContext(appSettings.CONNECTION_STRING)
-               .ConfigureServices()
-               .ConfigureRepositories();
-
-            services
-                .AddGraphQL()
-                .AddGraphTypes(ServiceLifetime.Scoped);
-
-            //services.AddAuthentication()
+            //services
+            //    .AddAuthentication(options => {
+            //        options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            //        options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+            //    })
             //    .AddGoogle(options =>
             //    {
             //        IConfigurationSection googleAuthNSection =
@@ -50,6 +60,24 @@ namespace Api
             //        options.ClientId = googleAuthNSection["ClientId"];
             //        options.ClientSecret = googleAuthNSection["ClientSecret"];
             //    });
+
+            services.AddCors(c =>
+            {
+                c.AddPolicy("CorsPolicy", builder => 
+                builder
+                    .AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader());
+            });
+
+            services
+               .ConfigureContext(appSettings.ConnectionStringDefault)
+               .ConfigureServices()
+               .ConfigureRepositories();
+
+            services
+                .AddGraphQL()
+                .AddGraphTypes(ServiceLifetime.Scoped);
 
             services
                 .AddControllers();
@@ -82,12 +110,19 @@ namespace Api
                    })
                    .UseGraphQLPlayground(options: new PlaygroundOptions());
             }
+            else
+            {
+                app.UseHsts();
+            }
 
-            app.UseCors("CorsPolice")
-              .UseRouting()
-              .UseAuthorization()
-              .UseAuthentication()
+            app
+              .UseHttpsRedirection()
               .UseStaticFiles()
+              .UseCors("CorsPolicy")
+              .UseMiddleware(typeof(ErrorHandlingMiddleware))
+              .UseRouting()
+              .UseAuthentication()
+              .UseAuthorization()
               .UseEndpoints(c =>
               {
                   c.MapControllers();

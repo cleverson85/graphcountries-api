@@ -3,18 +3,21 @@ using Microsoft.Extensions.Configuration;
 
 namespace Domain.Settings
 {
-    public class AppSettings : SettingsBase
+    public class AppSettings
     {
-        public string END_POINT { get; private set; }
-        public string CONNECTION_STRING { get; private set; }
-        public string GIT_PROJECT { get; private set; }
-
+        public string ApiCoutries { get; private set; }
+        public string GitRespository { get; private set; }
+        public string ConnectionStringDefault { get; private set; }
+        public string ClientId { get; private set; }
+        public JWTSettings JWTSettings { get; private set; }
+        
         public AppSettings(IConfiguration configuration)
         {
-            END_POINT = $"https://countries-274616.ew.r.appspot.com/";
-            GIT_PROJECT = "";
-            CONNECTION_STRING = $"Host=localhost;Port=5432;Pooling=true;Database=graphcountries;User Id=postgres;Password=docker;";
-           
+            ApiCoutries = configuration["ApiCoutries:EndPoint"];
+            GitRespository = configuration["GitRespository:Url"];
+            ConnectionStringDefault = configuration["ConnectionStrings:Default"];
+            ClientId = configuration.GetSection("Authentication:Google")["ClientId"];
+            JWTSettings = new JWTSettings(configuration);
         }
     }
 }

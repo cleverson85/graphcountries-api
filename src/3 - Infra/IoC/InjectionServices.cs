@@ -12,6 +12,7 @@ namespace IoC
         {
             services.AddScoped<ICountryService, CountryService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IAuthJwtService, AuthJwtService>();
 
             return services;
         }
