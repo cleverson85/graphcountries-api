@@ -2,12 +2,13 @@
 using Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using static Domain.Util.Endpoints;
 using static Google.Apis.Auth.GoogleJsonWebSignature;
 
 namespace Api.Controllers
 {
     [ApiController]
-    [Route("api/auth")]
+    [Route("api/auth/[action]")]
     public class AuthController : Controller
     {
         private readonly IAuthJwtService _authService;
@@ -18,12 +19,21 @@ namespace Api.Controllers
         }
 
         [HttpPost]
+        [Route(Route.POST)]
         public async Task<IActionResult> ExternalLogin([FromBody] ExternalAuth externalAuth)
         {
             Payload payload = await _authService.VerifyGoogleToken(externalAuth);
             string token = await _authService.GenerateToken(payload);
 
             return Ok(new AuthResponse { Token = token, IsAuthenticaded = true });
+        }
+
+        [HttpPost]
+        [Route(Route.POST)]
+        public async Task<IActionResult> TemporalyLogin([FromBody] User user)
+        {
+            string token = await _authService.GenerateToken(user);
+            return Ok(new AuthResponse { Token = token, IsAuthenticaded = true, TempUser = true });
         }
     }
 }

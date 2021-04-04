@@ -5,9 +5,9 @@
         public static class Route
         {
             public const string POST = "";
-            public const string PUT = "{idRegistro}";
-            public const string DELETE = "{idRegistro}";
-            public const string GET_BY_ID = "{idRegistro}";
+            public const string PUT = "{id}";
+            public const string DELETE = "{id}";
+            public const string GET_BY_ID = "{id}";
             public const string GET_BY_CAPITAL_NAME = "{capitalName}";
             public const string GET_BY_COUNTRY_NAME = "{countryName}";
             public const string GET_ALL = "";

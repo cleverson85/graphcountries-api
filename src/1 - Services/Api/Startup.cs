@@ -4,8 +4,6 @@ using Domain.Settings;
 using GraphQL.Server;
 using GraphQL.Server.Ui.Playground;
 using IoC;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -14,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Text;
 
 namespace Api
 {
@@ -30,61 +29,53 @@ namespace Api
         public void ConfigureServices(IServiceCollection services)
         {
             AppSettings appSettings = new AppSettings(Configuration);
-            services.AddScoped(c => appSettings);
-
-            //services
-            //        .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            //        .AddJwtBearer(c =>
-            //        {
-            //            c.Authority = "https://securetoken.google.com/graphcoutries";
-            //            c.TokenValidationParameters = new TokenValidationParameters()
-            //            {
-            //                ValidateIssuer = true,
-            //                ValidIssuer = "https://securetoken.google.com/graphcoutries",
-            //                ValidateAudience = true,
-            //                ValidAudience = "graphcoutries",
-            //                ValidateLifetime = true
-            //            };
-            //        });
-
-            //services
-            //    .AddAuthentication(options => {
-            //        options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            //        options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
-            //    })
-            //    .AddGoogle(options =>
-            //    {
-            //        IConfigurationSection googleAuthNSection =
-            //            Configuration.GetSection("Authentication:Google");
-
-            //        options.ClientId = googleAuthNSection["ClientId"];
-            //        options.ClientSecret = googleAuthNSection["ClientSecret"];
-            //    });
-
-            services.AddCors(c =>
-            {
-                c.AddPolicy("CorsPolicy", builder => 
-                builder
-                    .AllowAnyOrigin()
-                    .AllowAnyMethod()
-                    .AllowAnyHeader());
-            });
+            services.AddScoped(options => appSettings);
 
             services
-               .ConfigureContext(appSettings.ConnectionStringDefault)
-               .ConfigureServices()
-               .ConfigureRepositories();
+                .ConfigureContext(appSettings.ConnectionStringDefault)
+                .ConfigureServices()
+                .ConfigureRepositories();
 
             services
                 .AddGraphQL()
                 .AddGraphTypes(ServiceLifetime.Scoped);
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy", builder => 
+                    builder
+                        .WithOrigins("http://localhost:4200", "http://localhost:8081")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials()
+                );
+            });
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+
+                    ValidIssuer = appSettings.JWTSettings.ValidIssuer,
+                    ValidAudience = appSettings.JWTSettings.ValidAudience,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appSettings.JWTSettings.SecurityKey))
+                };
+            });
+
             services
                 .AddControllers();
 
-            services.AddSwaggerGen(c =>
+            services.AddSwaggerGen(options =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Graph Coutries Api", Version = "v1" });
+                options.SwaggerDoc("v1", new OpenApiInfo { Title = "Graph Coutries Api", Version = "v1" });
             });
         }
 
@@ -104,9 +95,9 @@ namespace Api
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger()
-                   .UseSwaggerUI(c =>
+                   .UseSwaggerUI(options =>
                    {
-                       c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+                       options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
                    })
                    .UseGraphQLPlayground(options: new PlaygroundOptions());
             }
@@ -116,16 +107,16 @@ namespace Api
             }
 
             app
-              .UseHttpsRedirection()
               .UseStaticFiles()
-              .UseCors("CorsPolicy")
-              .UseMiddleware(typeof(ErrorHandlingMiddleware))
               .UseRouting()
+              .UseCors("CorsPolicy")
+              .UseMiddleware(typeof(ErrorHandlingMiddleware)) 
+              .UseHttpsRedirection()
               .UseAuthentication()
               .UseAuthorization()
-              .UseEndpoints(c =>
+              .UseEndpoints(options =>
               {
-                  c.MapControllers();
+                  options.MapControllers();
               });
         }
     }

@@ -8,9 +8,9 @@ using static Domain.Util.Endpoints;
 
 namespace Api.Controllers
 {
-    [ApiController]
-    [Route("api/coutries/[action]")]
     [Authorize]
+    [ApiController]
+    [Route("api/countries/[action]")]
     public class GraphCountriesController : Controller
     {
         private readonly ICountryService _countryService;
@@ -26,6 +26,13 @@ namespace Api.Controllers
         public async Task<IActionResult> GetAll()
         {
             return Json(await _countryService.GetAll());
+        }
+
+        [HttpGet]
+        [Route(Route.GET_BY_ID)]
+        public async Task<IActionResult> GetById(int id)
+        {
+            return Json(await _countryService.GetById(id));
         }
 
         [HttpGet]

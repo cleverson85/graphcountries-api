@@ -8,5 +8,6 @@ namespace Domain.Interfaces.Services
     {
         Task<GoogleJsonWebSignature.Payload> VerifyGoogleToken(ExternalAuth externalAuth);
         Task<string> GenerateToken(GoogleJsonWebSignature.Payload payload);
+        Task<string> GenerateToken(User user);
     }
 }

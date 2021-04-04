@@ -11,33 +11,32 @@ services:
   #  networks:
   #      - backend 
   #  depends_on:
-  #      - db
+  #      - postgres
 
-  db:
-    image: postgres:13-alpine
-    container_name: postgres-db
+  postgres:
+    image: postgres:11-alpine
+    container_name: graphcountrird-postgres-db
     environment:
-      POSTGRES_HOST: localhost
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: docker
       POSTGRES_DB: countries
     ports:
-        - 5432:5432
+        - 15432:5432
     networks:
         - backend
     volumes:
         - postgres-data:/var/lib/postgresql/data
 
-  #flyway:
-  #  image: flyway/flyway:7
-  #  restart: on-failure
-  #  command: -url=jdbc:postgresql://localhost:5432/Countries -schemas=public -user=postgres -password=docker migrate
-  #  environment:
-  #      - FLYWAY_EDITION=community
-  #  volumes:
-  #      - ./postgresdb-script:/flyway/sql
-  #  depends_on:
-  #      - db
+  flyway:
+    image: flyway/flyway:7
+    restart: on-failure
+    command: -url=jdbc:postgresql://localhost:5432/countries -schemas=public -user=postgres -password=docker migrate
+    environment:
+        - FLYWAY_EDITION=community
+    volumes:
+        - ./postgresdb-script:/flyway/sql
+    depends_on:
+        - postgres
 
 networks:
   backend:
@@ -45,3 +44,6 @@ networks:
 
 volumes:
   postgres-data:
+
+
+  

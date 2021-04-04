@@ -19,10 +19,9 @@ namespace Data.Services
             _appSettings = appSettings;
         }
 
-        private async Task<SigningCredentials> GetSigningCredentials()
+        private async Task<SigningCredentials> GetSigningCredentials(string securityKey)
         {
-            var key = Encoding.UTF8.GetBytes(_appSettings.JWTSettings.SecurityKey);
-
+            var key = Encoding.UTF8.GetBytes(securityKey);
             return await Task.FromResult(new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256));
         }
 
@@ -41,7 +40,15 @@ namespace Data.Services
 
         public async Task<string> GenerateToken(GoogleJsonWebSignature.Payload payload)
         {
-            var signingCredentials = await GetSigningCredentials();
+            var signingCredentials = await GetSigningCredentials(_appSettings.JWTSettings.SecurityKey);
+            var tokenOptions = await GenerateTokenOptions(signingCredentials);
+
+            return await Task.FromResult(new JwtSecurityTokenHandler().WriteToken(tokenOptions));
+        }
+
+        public async Task<string> GenerateToken(User user)
+        {
+            var signingCredentials = await GetSigningCredentials(_appSettings.JWTSettings.SecurityKeyTemp);
             var tokenOptions = await GenerateTokenOptions(signingCredentials);
 
             return await Task.FromResult(new JwtSecurityTokenHandler().WriteToken(tokenOptions));
