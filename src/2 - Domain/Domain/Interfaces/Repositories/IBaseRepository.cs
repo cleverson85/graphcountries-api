@@ -14,6 +14,6 @@ namespace ToDo.Domain.Interfaces.Repository
         Task Delete(int id);
         Task<IEnumerable<Entity>> GetAll();
         Task<Entity> GetById(int id);
-        Task<IEnumerable<Entity>> GetByExpression(Expression<Func<Entity, bool>> filter = null);
+        Task<IList<Entity>> GetByExpression(Expression<Func<Entity, bool>> filter = null);
     }
 }

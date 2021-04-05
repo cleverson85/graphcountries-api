@@ -13,9 +13,12 @@ namespace Data.Services
 {
     public class AuthJwtService : IAuthJwtService
     {
+        private readonly IUSerService _userService;
         private readonly AppSettings _appSettings;
-        public AuthJwtService(AppSettings appSettings)
+
+        public AuthJwtService(IUSerService userService, AppSettings appSettings)
         {
+            _userService = userService;
             _appSettings = appSettings;
         }
 
@@ -48,7 +51,13 @@ namespace Data.Services
 
         public async Task<string> GenerateToken(User user)
         {
-            var signingCredentials = await GetSigningCredentials(_appSettings.JWTSettings.SecurityKeyTemp);
+            var data = await _userService.FindUser(user);
+            if (user.Email != data.Email || user.Senha != data.Senha)
+            {
+                return null;
+            }
+
+            var signingCredentials = await GetSigningCredentials(_appSettings.JWTSettings.SecurityKey);
             var tokenOptions = await GenerateTokenOptions(signingCredentials);
 
             return await Task.FromResult(new JwtSecurityTokenHandler().WriteToken(tokenOptions));

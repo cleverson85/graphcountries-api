@@ -32,19 +32,15 @@ namespace Api
             services.AddScoped(options => appSettings);
 
             services
-                .ConfigureContext(appSettings.ConnectionStringDefault)
+                .ConfigureContext(appSettings.ConnectionStringDocker)
                 .ConfigureServices()
                 .ConfigureRepositories();
-
-            services
-                .AddGraphQL()
-                .AddGraphTypes(ServiceLifetime.Scoped);
 
             services.AddCors(options =>
             {
                 options.AddPolicy("CorsPolicy", builder => 
                     builder
-                        .WithOrigins("http://localhost:4200", "http://localhost:8081")
+                        .WithOrigins("http://localhost:4200", "http://localhost:8080")
                         .AllowAnyHeader()
                         .AllowAnyMethod()
                         .AllowCredentials()
@@ -71,7 +67,8 @@ namespace Api
             });
 
             services
-                .AddControllers();
+                .AddControllers()
+                .AddNewtonsoftJson();
 
             services.AddSwaggerGen(options =>
             {
@@ -98,8 +95,7 @@ namespace Api
                    .UseSwaggerUI(options =>
                    {
                        options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
-                   })
-                   .UseGraphQLPlayground(options: new PlaygroundOptions());
+                   });
             }
             else
             {

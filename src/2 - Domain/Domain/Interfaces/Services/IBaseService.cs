@@ -12,6 +12,6 @@ namespace ToDo.Domain.Interfaces.Services
         Task Delete(int id);
         Task<IEnumerable<Entity>> GetAll();
         Task<Entity> GetById(int id);
-        Task<IEnumerable<Entity>> GetByExpression(Expression<Func<Entity, bool>> filter = null);
+        Task<IList<Entity>> GetByExpression(Expression<Func<Entity, bool>> filter = null);
     }
 }

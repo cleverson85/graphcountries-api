@@ -1,4 +1,5 @@
-﻿using Domain.Interfaces.Services;
+﻿using AutoMapper;
+using Domain.Interfaces.Services;
 using Domain.Models;
 using Domain.Settings;
 using Microsoft.AspNetCore.Authorization;
@@ -25,28 +26,35 @@ namespace Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            return Json(await _countryService.GetAll());
+            return Ok(await _countryService.GetCountries());
+        }
+
+        [HttpGet]
+        [Route(Route.GET_PAGE)]
+        public async Task<IActionResult> GetWithPages(int pageIndex, int pageSize)
+        {
+            return Ok(await _countryService.GetWithPages(pageIndex, pageSize));
         }
 
         [HttpGet]
         [Route(Route.GET_BY_ID)]
         public async Task<IActionResult> GetById(int id)
         {
-            return Json(await _countryService.GetById(id));
+            return Ok(await _countryService.GetCountryById(id));
         }
 
         [HttpGet]
         [Route(Route.GET_BY_CAPITAL_NAME)]
         public async Task<IActionResult> GetByCapitalName(string capitalName)
         {
-            return Json(await _countryService.GetByCapitalName(capitalName));
+            return Ok(await _countryService.GetByCapitalName(capitalName));
         }
 
         [HttpGet]
         [Route(Route.GET_BY_COUNTRY_NAME)]
         public async Task<IActionResult> GetByCountryName(string countryName)
         {
-            return Json(await _countryService.GetByCountryName(countryName));
+            return Ok(await _countryService.GetByCountryName(countryName));
         }
 
         [HttpPost]
@@ -54,7 +62,7 @@ namespace Api.Controllers
         public async Task<IActionResult> Save([FromBody] Country entity)
         {
             await _countryService.SaveCountry(entity);
-            return Ok();
+            return Ok(await GetAll());
         }
 
         [HttpPut]
@@ -67,10 +75,18 @@ namespace Api.Controllers
 
         [HttpDelete]
         [Route(Route.DELETE)]
-        public async Task<IActionResult> Delete([FromBody] Country entity)
+        public async Task<IActionResult> Delete(int id)
         {
-            await _countryService.DeleteCountry(entity);
+            await _countryService.DeleteCountry(id);
             return Ok();
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetCount()
+        {
+            int count = await _countryService.GetCount();
+            return Ok(count);
         }
 
         [HttpGet]
@@ -79,31 +95,5 @@ namespace Api.Controllers
         {
             return await Task.FromResult(Json(_appSettings.GitRespository));
         }
-
-
-        //public async Task<IActionResult> Post([FromBody] GraphQLQuery query)
-        //{
-        //    var inputs = query.Variables;
-
-        //    var schema = new Schema()
-        //    {
-        //        Query = new CountryQuery(_countryService)
-        //    };
-
-        //    var result = await new DocumentExecuter().ExecuteAsync(_ =>
-        //    {
-        //        _.Schema = schema;
-        //        _.Query = query.Query;
-        //        _.OperationName = query.OperationName;
-        //        _.Inputs = inputs;
-        //    }).ConfigureAwait(false);
-
-        //    if (result.Errors?.Count > 0)
-        //    {
-        //        return BadRequest();
-        //    }
-
-        //    return Ok(result);
-        //}
     }
 }

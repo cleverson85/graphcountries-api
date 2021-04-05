@@ -4,8 +4,8 @@ using ToDo.Domain.Interfaces.Repository;
 
 namespace Domain.Interfaces.Repositories
 {
-    public interface IUserRepository : IBaseRepository<User>
+    public interface ICountryRepository : IBaseRepository<CountryData>
     {
-        Task<User> FindUser();
+        Task<CountryData> GetCountryData();
     }
 }

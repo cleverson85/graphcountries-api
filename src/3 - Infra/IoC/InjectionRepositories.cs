@@ -9,6 +9,7 @@ namespace IoC
         public static IServiceCollection ConfigureRepositories(this IServiceCollection services)
         {
             services.AddScoped<ICountryRepository, CountryRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
 
             return services;
         }

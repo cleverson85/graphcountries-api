@@ -7,6 +7,7 @@ namespace Data.Contexts
     public class Context : DbContext
     {
         public DbSet<CountryData> CountryData { get; set; }
+        public DbSet<User> User { get; set; }
 
         public Context(DbContextOptions<Context> options) : base(options)
         { }

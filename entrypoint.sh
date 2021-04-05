@@ -1,25 +1,17 @@
-!/bin/sh
+#!/bin/bash
 
-: ${HOST:=localhost}
-: ${PORT:=5432}
-: ${POSTGRES_DB:=graphcountries}
-: ${POSTGRES_USER:=postgres}
-: ${POSTGRES_PASSWORD:=docker}
+# this script is run when the docker container is built
+# it imports the base database structure and create the database for the tests
 
-until nc -z $HOST $PORT
-do
-    echo "Waiting for PSQL ($HOST:$PORT) to start..."
-    sleep 0.5
-done
-  
-echo "Start entrypoint - RUNTIME"
+DATABASE_NAME="coutries"
 
-CONTAINER_ALREADY_STARTED="Container already started"
+echo "*** CREATING DATABASE ***"
 
-if [ ! -e $CONTAINER_ALREADY_STARTED ]; then
-    touch $CONTAINER_ALREADY_STARTED
-    echo "-- First container startup --"
-    /bin/sh -c "dotnet ef database update"
-else
-    echo "-- Not first container startup --"
-fi
+# create default database
+gosu postgres postgres --single <<EOSQL
+  CREATE DATABASE "$DATABASE_NAME";
+  GRANT ALL PRIVILEGES ON DATABASE "$DATABASE_NAME" TO postgres;
+EOSQL
+
+
+echo "*** DATABASE CREATED! ***"

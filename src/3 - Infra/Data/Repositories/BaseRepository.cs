@@ -34,20 +34,16 @@ namespace Data.Repositories
             return await _dbSet.AsNoTracking().ToListAsync();
         }
 
-        public virtual async Task<IEnumerable<Entity>> GetByExpression(Expression<Func<Entity, bool>> filter = null)
+        public async Task<IList<Entity>> GetByExpression(Expression<Func<Entity, bool>> filter = null)
         {
-            IEnumerable<Entity> query;
-
             if (filter != null)
             {
-                query = await _dbSet.Where(filter).AsNoTracking().ToListAsync();
+                return await _dbSet.Where(filter).ToListAsync();
             }
             else
             {
-                query = await _dbSet.AsNoTracking().ToListAsync();
+                return await _dbSet.ToListAsync();
             }
-
-            return query;
         }
 
         public async Task<Entity> GetById(int id)

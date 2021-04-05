@@ -21,13 +21,13 @@ namespace Data.Services
         public async Task<IEnumerable<Country>> GetByCapitalName(string capitalName)
         {
             IList<Country> jsonList = await GetJsonCountryList();
-            return jsonList.Where(c => c.Capital.Contains(capitalName, StringComparison.InvariantCultureIgnoreCase));
+            return await Task.FromResult(jsonList.Where(c => c.Capital.Contains(capitalName, StringComparison.InvariantCultureIgnoreCase)));
         }
 
         public async Task<IEnumerable<Country>> GetByCountryName(string countryName)
         {
             IList<Country> jsonList = await GetJsonCountryList();
-            return jsonList.Where(c => c.Name.Contains(countryName, StringComparison.InvariantCultureIgnoreCase));
+            return await Task.FromResult(jsonList.Where(c => c.Name.Contains(countryName, StringComparison.InvariantCultureIgnoreCase)));
         }
 
         public async Task SaveCountry(Country entity)
@@ -45,15 +45,16 @@ namespace Data.Services
                 country = new CountryData();
             }
 
-            jsonList.Add(entity);
+            jsonList.Add(await ConfigureEntityId(entity));
             country.JsonData = JsonSerializer.Serialize(jsonList);
 
             await Save(country);
         }
 
-        public async Task DeleteCountry(Country entity)
+        public async Task DeleteCountry(int id)
         {
             IList<Country> jsonList = await GetJsonCountryList();
+            var entity = await GetCountryById(id);
 
             if (jsonList.Remove(entity))
             {
@@ -67,9 +68,11 @@ namespace Data.Services
         public async Task UpdateCountry(Country entity)
         {
             IList<Country> jsonList = await GetJsonCountryList();
+            var entityToRemove = jsonList.Where(c => c.Id == entity.Id).FirstOrDefault();
 
-            if (jsonList.Remove(entity))
+            if (jsonList.Remove(entityToRemove))
             {
+                jsonList.Add(entity);
                 var country = await _countryRepository.GetCountryData();
                 country.JsonData = JsonSerializer.Serialize(jsonList);
 
@@ -77,10 +80,50 @@ namespace Data.Services
             }
         }
 
+        public async Task<IList<Country>> GetCountries()
+        {
+            return await GetJsonCountryList();
+        }
+
+        public async Task<IList<Country>> GetWithPages(int pageIndex, int pageSize)
+        {
+            var list = await GetJsonCountryList();
+            return await Task.FromResult(list.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList());
+        }
+
         private async Task<IList<Country>> GetJsonCountryList()
         {
             var country = await _countryRepository.GetCountryData();
-            return JsonSerializer.Deserialize<IList<Country>>(country.JsonData);
+
+            if (country == null)
+            {
+                return new List<Country>();
+            }
+
+            return await Task.FromResult(JsonSerializer.Deserialize<IList<Country>>(country?.JsonData));
+        }
+
+        private async Task<Country> ConfigureEntityId(Country entity)
+        {
+            if (entity.Id == 0)
+            {
+                entity.Id = new Random().Next(500, 1000);
+            }
+
+            return await Task.FromResult(entity);
+        }
+
+        public async Task<int> GetCount()
+        {
+            var list = await GetJsonCountryList();
+            return await Task.FromResult(list.Count);
+        }
+
+        public async Task<Country> GetCountryById(int id)
+        {
+            var country = await _countryRepository.GetCountryData();
+            var jsonList = JsonSerializer.Deserialize<IList<Country>>(country.JsonData);
+            return await Task.FromResult(jsonList.Where(c => c.Id == id).FirstOrDefault());
         }
     }
 }

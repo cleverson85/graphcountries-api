@@ -1,7 +1,6 @@
 ﻿using Domain.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using ToDo.Domain.Interfaces.Repository;
@@ -38,7 +37,7 @@ namespace Data.Services
             return await _repository.GetById(id);
         }
 
-        public virtual async Task<IEnumerable<Entity>> GetByExpression(Expression<Func<Entity, bool>> filter = null)
+        public virtual async Task<IList<Entity>> GetByExpression(Expression<Func<Entity, bool>> filter = null)
         {
             return await _repository.GetByExpression(filter);
         }

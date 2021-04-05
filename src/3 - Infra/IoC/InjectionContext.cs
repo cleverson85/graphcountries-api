@@ -6,9 +6,9 @@ namespace IoC
 {
     public static class InjectionContext
     {
-        public static IServiceCollection ConfigureContext(this IServiceCollection services, string conNection)
+        public static IServiceCollection ConfigureContext(this IServiceCollection services, string connection)
         {
-            return services.AddDbContext<Context>(options => options.UseNpgsql(conNection));
+            return services.AddDbContext<Context>(options => options.UseNpgsql(connection));
         }
     }
 }

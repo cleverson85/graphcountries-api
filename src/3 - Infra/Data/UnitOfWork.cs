@@ -11,7 +11,6 @@ namespace Data
     public class UnitOfWork : IUnitOfWork
     {
         public readonly Context _context;
-        private bool disposedValue;
 
         public IDbContextTransaction Transaction { get; private set; }
 

@@ -12,7 +12,7 @@ namespace Data.GraphQL.Types
             Field(c => c.Id);
             Field(c => c.Name);
             Field(c => c.Capital);
-            Field(c => c.Flag.SvgFile);
+            Field(c => c.Flag);
             Field(c => c.Area);
             Field(c => c.Population);
             Field(c => c.PopulationDensity);

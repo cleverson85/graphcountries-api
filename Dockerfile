@@ -1,8 +1,7 @@
-ROM alpine
+FROM postgres:11-alpine
+RUN mkdir -p /tmp/psql_data/
 
-WORKDIR /app
+COPY script.sql /tmp/psql_data/
+COPY entrypoint.sh /docker-entrypoint-initdb.d/
 
-COPY entrypoint.sh .
-RUN chmod 700 ./entrypoint.sh
-
-ENTRYPOINT [ "/bin/sh", "./entrypoint.sh" ]
+ENTRYPOINT entrypoint.sh

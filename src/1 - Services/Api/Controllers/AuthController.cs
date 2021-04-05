@@ -30,9 +30,15 @@ namespace Api.Controllers
 
         [HttpPost]
         [Route(Route.POST)]
-        public async Task<IActionResult> TemporalyLogin([FromBody] User user)
+        public async Task<IActionResult> Login([FromBody] User user)
         {
             string token = await _authService.GenerateToken(user);
+
+            if (token == null)
+            {
+                return BadRequest();
+            }
+
             return Ok(new AuthResponse { Token = token, IsAuthenticaded = true, TempUser = true });
         }
     }
