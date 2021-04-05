@@ -1,7 +1,7 @@
 
 1° - Execute o comando na pasta da solução => docker-compose up -d --build
 
-2° - Alterar a conexão para o contexto Default (serviço ConfigureContext, classe Startup) e executar o comando no PM => update-database
+2° - Alterar a conexão para o contexto Default (serviço ConfigureContext, classe Startup => ConnectionStringDefault ) e executar o comando no PM => update-database
 
 3° - Caso erro execute o comando add-migration countries e update-database
 
@@ -25,3 +25,11 @@
 
 5° - Após dockerizar a api o consumo a mesma pode ser feito pela porta 5050
 
+6° - A string de conexão devera ser alterada casa desede debugar a aplicação (serviço ConfigureContext, classe Startup - ConnectionStringDocker - ConnectionStringDefault);
+
+Tecnologias usadas:
+C#
+Aspnet Core 3.1
+Docker
+
+Metodologia emprega: DDD
