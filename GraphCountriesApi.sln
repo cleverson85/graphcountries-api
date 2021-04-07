@@ -21,14 +21,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data", "src\3 - Infra\Data\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker", "docker", "{1EEB369E-545F-4136-A213-5C91065B54CF}"
 	ProjectSection(SolutionItems) = preProject
-		docker-compose.yml = docker-compose.yml
-		init.sql = init.sql
 		REDME.md = REDME.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "teste", "teste", "{97F7D51C-4FB5-4434-816B-1199BBD04D3C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProject", "test\TestProject\TestProject.csproj", "{AC3D79E3-373A-4AD8-BF21-C1E595DD498C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestProject", "test\TestProject\TestProject.csproj", "{AC3D79E3-373A-4AD8-BF21-C1E595DD498C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "postgresdb-script", "postgresdb-script", "{C54B8D49-4EA4-4D50-A57C-731B3C069894}"
+	ProjectSection(SolutionItems) = preProject
+		V1__create_init.sql = V1__create_init.sql
+	EndProjectSection
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{50E1CC2F-F413-4504-B390-2AD5BA672D44}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -56,6 +61,10 @@ Global
 		{AC3D79E3-373A-4AD8-BF21-C1E595DD498C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AC3D79E3-373A-4AD8-BF21-C1E595DD498C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AC3D79E3-373A-4AD8-BF21-C1E595DD498C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50E1CC2F-F413-4504-B390-2AD5BA672D44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50E1CC2F-F413-4504-B390-2AD5BA672D44}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50E1CC2F-F413-4504-B390-2AD5BA672D44}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50E1CC2F-F413-4504-B390-2AD5BA672D44}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -69,6 +78,7 @@ Global
 		{2AD990FF-1000-44E5-ABEC-1E0331A47C35} = {37F5FD93-3E8D-46F8-B614-5F4B0D64E127}
 		{00D8DE7B-6956-4537-81D4-5351F195A3FA} = {37F5FD93-3E8D-46F8-B614-5F4B0D64E127}
 		{AC3D79E3-373A-4AD8-BF21-C1E595DD498C} = {97F7D51C-4FB5-4434-816B-1199BBD04D3C}
+		{C54B8D49-4EA4-4D50-A57C-731B3C069894} = {1EEB369E-545F-4136-A213-5C91065B54CF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BAFF61D5-0768-43E9-9C97-B86195C9BB52}

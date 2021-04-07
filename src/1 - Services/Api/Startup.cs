@@ -1,8 +1,6 @@
 using Api.Middlewares;
 using Domain.Interfaces;
 using Domain.Settings;
-using GraphQL.Server;
-using GraphQL.Server.Ui.Playground;
 using IoC;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -32,7 +30,7 @@ namespace Api
             services.AddScoped(options => appSettings);
 
             services
-                .ConfigureContext(appSettings.ConnectionStringDocker)
+                .ConfigureContext(appSettings.ConnectionStringDefault)
                 .ConfigureServices()
                 .ConfigureRepositories();
 

@@ -1,0 +1,50 @@
+version: '3.6'
+
+services:
+  api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:80
+    ports:
+      - "5050:80"
+      - "443"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+    networks:
+        - backend 
+    depends_on:
+        - postgres
+
+  postgres:
+    image: postgres:11-alpine
+    container_name: graphcountry-postgres-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: docker
+      POSTGRES_DB: countries
+    ports:
+        - 15432:5432
+    networks:
+        - backend
+    volumes:
+        - postgres-data:/var/lib/postgresql/data
+
+  #flyway:
+  #  image: flyway/flyway:7
+  #  restart: on-failure
+  #  command: -url=jdbc:postgresql://postgres:5432/countries -schemas=migrate -user=capivara -password=docker migrate
+  #  environment:
+  #      - FLYWAY_EDITION=community
+  #  volumes:
+  #      - ./postgresdb-script:/flyway/sql
+  #  depends_on:
+  #      - postgres
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  postgres-data:
+   

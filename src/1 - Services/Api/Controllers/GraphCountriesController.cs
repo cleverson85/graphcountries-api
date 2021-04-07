@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Domain.Interfaces.Services;
+﻿using Domain.Interfaces.Services;
 using Domain.Models;
 using Domain.Settings;
 using Microsoft.AspNetCore.Authorization;

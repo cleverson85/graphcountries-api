@@ -10,10 +10,10 @@ namespace IoC
     {
         public static IServiceCollection ConfigureServices(this IServiceCollection services)
         {
-            services.AddScoped<IAuthJwtService, AuthJwtService>();
-            services.AddScoped<ICountryService, CountryService>();
-            services.AddScoped<IUSerService, UserService>();
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddTransient<IAuthJwtService, AuthJwtService>();
+            services.AddTransient<ICountryService, CountryService>();
+            services.AddTransient<IUSerService, UserService>();
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
 
             return services;
         }

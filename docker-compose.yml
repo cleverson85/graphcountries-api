@@ -2,39 +2,7 @@ version: '3.6'
 
 services:
   api:
-    build: 
+    image: ${DOCKER_REGISTRY-}api
+    build:
       context: .
-      dockerfile: src\1 - Services\Api\Dockerfile
-    container_name: graphcountrird-api
-    environment:
-      ASPNETCORE_ENVIRONMENT: Development
-    ports:
-      - "5050:80"       
-    networks:
-        - backend 
-    depends_on:
-        - postgres
-
-  postgres:
-    image: postgres:11-alpine
-    container_name: graphcountrird-postgres-db
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: docker
-      POSTGRES_DB: countries
-    ports:
-        - 15432:5432
-    networks:
-        - backend
-    volumes:
-        - postgres-data:/var/lib/postgresql/data
-
-networks:
-  backend:
-    driver: bridge
-
-volumes:
-  postgres-data:
-
-
-  
+      dockerfile: src/1 - Services/Api/Dockerfile
